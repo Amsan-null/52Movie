@@ -1,13 +1,12 @@
 from django.db import models
 from django.conf import settings
+from django.core.validators import MinValueValidator, MaxValueValidator
 
-class Genre(models.Model):
-    name = models.CharField(max_length=100)
 
 class Movie(models.Model):
     adult = models.BooleanField()
     backdrop_path = models.CharField(max_length=200)
-    genres_id = models.ManyToManyField(Genre, related_name='movie_genres')
+    genre_ids = models.JSONField(null=True)
     original_language = models.CharField(max_length=200)
     original_title = models.CharField(max_length=100)
     overview = models.TextField()
@@ -20,9 +19,17 @@ class Movie(models.Model):
     vote_count = models.IntegerField(null=True)
     like_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='like_movies')
 
+
+class Genre(models.Model):
+    movie = models.ManyToManyField(Movie, related_name='movie_genres')
+    genre_id = models.CharField(max_length=15)
+    name = models.CharField(max_length=100)
+
+
 class Review(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
     writer = models.CharField(max_length=200)
     content = models.TextField()
+    rating = models.FloatField(validators=[MinValueValidator(0.5), MaxValueValidator(5.0)])
     like_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='like_reviews')
