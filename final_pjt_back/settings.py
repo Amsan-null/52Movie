@@ -33,6 +33,8 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'movies',
     'accounts',
+    'rest_framework.authtoken',
+    'dj_rest_auth',
     'rest_framework',
     'drf_spectacular',
     'django.contrib.admin',
@@ -41,6 +43,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'dj_rest_auth.registration',
 ]
 
 MIDDLEWARE = [
@@ -51,6 +58,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'allauth.account.middleware.AccountMiddleware'
 ]
 
 ROOT_URLCONF = 'final_pjt_back.urls'
@@ -128,6 +136,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema.',
+    
+    'DEFAULT_AUTHENTICATION_CLASS': 'rest_framework.authentication.TokenAuthentication',
+    
+    'DEFAULT_PERMISSION_CLASS': 'rest_framework.permissions.AllowAny',
+    
 }
 
 AUTH_USER_MODEL = 'accounts.User'

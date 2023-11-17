@@ -11,13 +11,13 @@ class Movie(models.Model):
     original_language = models.CharField(max_length=200)
     original_title = models.CharField(max_length=100)
     overview = models.TextField()
-    popularity = models.FloatField()
+    popularity = models.FloatField(null=True)
     poster_path = models.CharField(max_length=200)
-    release_date = models.DateField()
+    release_date = models.DateField(null=True)
     title = models.CharField(max_length=100)
     video = models.CharField(max_length=200)
-    vote_average = models.FloatField()
-    vote_count = models.IntegerField()
+    vote_average = models.FloatField(null=True)
+    vote_count = models.IntegerField(null=True)
     like_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='like_movies')
 
 class Review(models.Model):
