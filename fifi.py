@@ -7,7 +7,7 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'final_pjt_back.settings')  # 'y
 django.setup()
 
 import requests
-from movies.models import Movie  # 'yourapp'은 실제 Django 앱의 이름으로 바꿔야 합니다.
+from movies.models import Movie, Genre  # 'yourapp'은 실제 Django 앱의 이름으로 바꿔야 합니다.
 
 # API 키
 api_key = "d15d5967b6757f765d670d52691a3b4d"
@@ -17,7 +17,7 @@ base_url = "https://api.themoviedb.org/3/movie/popular?language=ko-KR&page="
 
 try:
     # Django 모델에 데이터 저장
-    for page in range(1, 300):
+    for page in range(1, 601):
         url = f"{base_url}{page}&api_key={api_key}"
 
         # API로부터 데이터 가져오기
@@ -35,8 +35,15 @@ try:
                 release_date=movie_data['release_date'],
                 vote_count=movie_data['vote_count'],
                 vote_average=movie_data['vote_average'],
+                popularity =movie_data['popularity'],
+                genre_ids=movie_data['genre_ids']
             )
-
+            # genre_list = []
+            # for i in movie_data['genre_ids']:
+            #     for j in genres:
+            #         if i == j['id']:
+            #             genre_list.append(j['name'])
+        
         print(f"페이지 {page}의 데이터를 성공적으로 Django DB에 저장했습니다.")
 
     print("데이터를 성공적으로 Django DB에 저장했습니다.")
