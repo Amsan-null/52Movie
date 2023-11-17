@@ -48,7 +48,9 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'dj_rest_auth.registration',
+    'corsheaders',
 ]
+SITE_ID = 1
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -58,7 +60,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'allauth.account.middleware.AccountMiddleware'
+    'allauth.account.middleware.AccountMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'final_pjt_back.urls'
@@ -137,16 +140,28 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema.',
     
-    'DEFAULT_AUTHENTICATION_CLASS': 'rest_framework.authentication.TokenAuthentication',
+    'DEFAULT_AUTHENTICATION_CLASS':  ('rest_framework_jwt.authentication.JSONWebTokenAuthentication',  'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication'),
     
-    'DEFAULT_PERMISSION_CLASS': 'rest_framework.permissions.AllowAny',
+    'DEFAULT_PERMISSION_CLASS': (
+        'rest_framework.permissions.IsAuthenticated',
+    'rest_framework.permissions.AllowAny',)
     
 }
 
 AUTH_USER_MODEL = 'accounts.User'
 
+
 REST_FRAMEWORK = {
     # YOUR SETTINGS
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
-SITE_ID = 1
+
+CORS_ALLOWED_ORIGINS = [
+    'http://127.0.0.1:8000',
+    'http://localhost:5173'
+]
+
+ACCOUNT_EMAIL_REQUIRED = False
+ACCOUNT_EMAIL_VERIFICATION = None
+

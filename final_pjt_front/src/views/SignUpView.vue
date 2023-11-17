@@ -1,37 +1,54 @@
 <template>
+  <div>
+    <h1>Signup</h1>
     <div>
-        <h1>회원가입</h1>
-        <form @submit.prevent="SignUp">
-            <label for="id">아이디: </label>
-            <input type="text" id="userid" v-model.trim="userid"><br>
-            <label for="id">닉네임: </label>
-            <input type="text" id="nickname" v-model.trim="nickname"><br>
-            <label for="id">비밀번호: </label>
-            <input type="password" id="password" v-model.trim="password"><br>
-            <input type="submit" value="가입하기">
-        </form>
+      <label for="username">사용자 이름: </label>
+      <input type="text" id="username" v-model="credentials.username">
     </div>
+    <div>
+      <label for="password">비밀번호: </label>
+      <input type="password" id="password" v-model="credentials.password">
+    </div>
+    <div>
+      <label for="passwordConfirmation">비밀번호 확인: </label>
+      <input type="password" id="passwordConfirmation" v-model="credentials.passwordConfirmation">
+    </div>
+    <button @click="signup">회원가입</button>
+  </div>
 </template>
 
-<script setup>
-import { ref } from 'vue'
-import { useCounterStore } from '../stores/counter';
+<script>
+import axios from 'axios'
 
-const username = ref(null)
-const nickname = ref(null)
-const password = ref(null)
-const store = useCounterStore()
+// const SERVER_URL = process.env.VUE_APP_SERVER_URL
 
-const SignUp = function () {
-    const payload = {
-      username: username.value,
-      nickname: nickname.value,
-      password: password.value,
+export default {
+  name: 'Signup',
+  data: function () {
+    return {
+      credentials : {
+        username : null,
+        password : null,
+        passwordConfirmation : null,
+      }
     }
-    store.signup(payload)
+  },
+  methods: {
+    signup: function () {
+      axios ({
+        method : 'post',
+        url : 'http://127.0.0.1:8000/accounts/signup/',
+        data: this.credentials,
+      })
+        .then(res => {
+          console.log(res)
+          // 회원가입에 성공하면 로그인 페이지로 보내기
+          this.$router.push({ name : 'login'})
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    }
   }
+}
 </script>
-
-<style scoped>
-
-</style>
