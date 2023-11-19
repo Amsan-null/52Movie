@@ -3,6 +3,7 @@ import MainPageView from '../views/MainPageView.vue'
 import MovieDetailView from '../views/MovieDetailView.vue'
 import SignUpView from '../views/SignUpView.vue'
 import LoginView from '../views/LoginView.vue'
+import MyProfilePageView from '../views/MyProfilePageView.vue'
 
 
 const router = createRouter({
@@ -27,7 +28,12 @@ const router = createRouter({
       path: '/accounts/login',
       name: 'login',
       component: LoginView
-    }
+    },
+    {
+      path: '/accounts/myProfile',
+      name: 'MyProfile',
+      component: MyProfilePageView,
+    },
 
   ]
 })

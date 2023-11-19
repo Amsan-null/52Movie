@@ -12,8 +12,8 @@
 <div v-else>
   <h2>로그인시보이는화면</h2>
   <nav>
-    <!-- <RouterLink :to="{ name: 'logout' }">로그아웃</RouterLink> -->
-    <RouterLink :to="{ name: 'mypage' }">마이페이지</RouterLink>
+    <RouterLink @click.native="logout" to="#">로그아웃</RouterLink>
+    <RouterLink :to="{ name: 'MyProfile' }">마이프로필</RouterLink>
   </nav>
 </div>
   </header>
@@ -26,6 +26,23 @@
   import { RouterLink, RouterView } from 'vue-router'
 
   const isLogin = ref(false);
+
+  const logout = function() {
+      this.login = false
+      localStorage.removeItem('jwt')
+      this.$router.push({ name: 'Login' })
+  }
+
+  // const created =  function () {
+  //   const token = localStorage.getItem('jwt')
+  //   if (token) {
+  //     this.isLogin = true
+  //   }
+  // }
+
+
+
+
 
   </script>
 

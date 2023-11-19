@@ -3,10 +3,11 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from .models import Movie, Review
+from .models import Movie, Comment
 from accounts.models import User
 from .serializers import MovieListSerializer, MovieSerializer, CommentListSerializer, CommentSerializer
 from django.http import HttpResponseForbidden
+from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 
 # @permission_classes([IsAuthenticated])
 @api_view(['GET'])
@@ -21,11 +22,12 @@ def detail(request, pk):
     serializer = MovieSerializer(movie)
     return Response(serializer.data)
 
-
+@authentication_classes([JSONWebTokenAuthentication])
+@permission_classes([IsAuthenticated])
 @api_view(['GET', 'POST', 'PUT', 'DELETE'])
-def comment_index(request, pk):
+def comments(request, pk):
     
-    movie = Movie.objects.get(pk=pk)
+    movie = Movie.objects.get(pk=pk) # movie_pk를 받고 comment_pk는?
     comments = Review.objects.all()
     comment = Review.objects.get(pk=comment_pk)
     if request.method == 'GET':
