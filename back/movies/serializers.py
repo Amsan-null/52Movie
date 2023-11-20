@@ -22,3 +22,33 @@ class CommentSerializer(serializers.ModelSerializer):
         model = Comment
         fields = ('content', 'rating')
         read_only_fields =	('movie', 'user', 'writer')
+
+class MovieLikeSerializer(serializers.ModelSerializer):
+    user = serializers.SerializerMethodField()
+    likes = serializers.StringRelatedField(many=True)
+    likes_count = serializers.SerializerMethodField()
+
+    def get_user(self, obj):
+        return obj.user.username
+
+    def get_like_count(self, obj):
+        return obj.likes.count()
+
+    class Meta:
+        model = Movie
+        fields = ("id", "user", "likes_count", 'likes')
+
+class CommentLikeSerializer(serializers.ModelSerializer):
+    user = serializers.SerializerMethodField()
+    likes = serializers.StringRelatedField(many=True)
+    likes_count = serializers.SerializerMethodField()
+
+    def get_user(self, obj):
+        return obj.user.username
+
+    def get_like_count(self, obj):
+        return obj.likes.count()
+
+    class Meta:
+        model = Movie
+        fields = ("id", "user", "likes_count", 'likes')
