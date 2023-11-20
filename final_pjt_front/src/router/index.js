@@ -4,6 +4,7 @@ import MovieDetailView from '../views/MovieDetailView.vue'
 import SignUpView from '../views/SignUpView.vue'
 import LoginView from '../views/LoginView.vue'
 import MyProfilePageView from '../views/MyProfilePageView.vue'
+import RecommendMovies from '@/components/RecommendMovies.vue'
 
 
 const router = createRouter({
@@ -34,8 +35,15 @@ const router = createRouter({
       name: 'MyProfile',
       component: MyProfilePageView,
     },
+    {
+      path: '/recommend',
+      name: 'recommend',
+      component: RecommendMovies,
+    },
+
 
   ]
 })
+
 
 export default router

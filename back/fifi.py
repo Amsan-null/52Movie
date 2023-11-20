@@ -17,7 +17,7 @@ base_url = "https://api.themoviedb.org/3/movie/popular?language=ko-KR&page="
 
 try:
     # Django 모델에 데이터 저장
-    for page in range(1, 601):
+    for page in range(1, 201):
         url = f"{base_url}{page}&api_key={api_key}"
 
         # API로부터 데이터 가져오기

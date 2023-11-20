@@ -5,7 +5,8 @@
     <h2>{{ user.username }}님이 좋아요한 영화</h2>
 
     <div v-for = "(movie, idx) in my_like_movies" :key="idx">
-    <MovieCard :movie="movie" />
+      <p>{{ movie.title }}</p>
+    <!-- <MovieCard :movie="movie" /> -->
     </div>
 
     <h2>{{ user.username }}님의 코멘트</h2>
@@ -17,7 +18,7 @@
 
 <script>
 import axios from 'axios'
-import MovieCard from "@/components/MovieCard"
+// import MovieCard from "@/components/MovieCard"
 
 export default {
   name: "MyProfile",
@@ -29,7 +30,7 @@ export default {
     }
   },
   components: {
-    MovieCard,
+    // MovieCard,
   },
    methods: {
     getToken: function () {

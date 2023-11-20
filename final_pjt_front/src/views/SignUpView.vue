@@ -18,7 +18,6 @@
 </template>
 
 <script>
-import axios from 'axios'
 
 // async function get_JWT_token() {
 //   try {
@@ -52,34 +51,36 @@ import axios from 'axios'
 //   return api_result;
 // };
 
+import { ref } from 'vue';
+import axios from 'axios';
+import { useRouter } from 'vue-router';
+
 export default {
   name: 'Signup',
-  data: function () {
-    return {
-      credentials : {
-        username : '',
-        password : '',
-        passwordConfirmation : '',
+  setup() {
+    const router = useRouter();
+    const credentials = ref({
+      username: '',
+      password: '',
+      passwordConfirmation: '',
+    });
+
+    const signup = async () => {
+      try {
+        const response = await axios.post('http://127.0.0.1:8000/accounts/signup/', credentials.value);
+        console.log(response);
+        router.push({ name: 'login' });
+      } catch (error) {
+        console.error(error);
+        alert('회원가입에 실패하였습니다.');
       }
-    }
+    };
+
+    return {
+      credentials,
+      signup,
+    };
   },
-  methods: {
-    signup: function () {
-      axios ({
-        method : 'post',
-        url : 'http://127.0.0.1:8000/accounts/signup/',
-        data: this.credentials,
-      })
-        .then(res => {
-          // console.log(res)
-          // 회원가입에 성공하면 로그인 페이지로 보내기
-          this.$router.push({ name : 'login'})
-        })
-        .catch(err => {
-          // console.log(err)
-          alert('회원가입에 실패하였습니다.')
-        })
-    }
-  }
-}
+};
+
 </script>

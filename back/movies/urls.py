@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from .views import RandomMoviesView
 
 
 app_name = 'movies'
@@ -12,6 +13,7 @@ urlpatterns = [
     # path('<int:pk>/<int:comment_pk>/comments)
     # path('<int:movie_pk>/likes/', views.likes, name='likes'),
     # path('<username>/like_list/', views.like_list, name='like_list'),
+    path('random/', RandomMoviesView.as_view()),
 ]
 
 # 영화 좋아요, 코멘트 좋아요 구현 필요
