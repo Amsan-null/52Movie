@@ -53,3 +53,14 @@ def my_profile(request):
 
 def user_profile(request):
     return
+
+@api_view(['POST'])
+def follow(request, username):
+    you = get_object_or_404(get_user_model(), pk=username)
+    me = request.user
+    if me in you.followers.all():
+        you.followers.remove(me)
+        return Response("unfollow", status=status.HTTP_200_OK)
+    else:
+        you.followers.add(me)
+        return Response("follow", status=status.HTTP_200_OK)
