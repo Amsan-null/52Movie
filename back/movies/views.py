@@ -1,11 +1,14 @@
 from rest_framework.decorators import permission_classes, authentication_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
+from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from .models import Movie, Comment
 from accounts.models import User
 from .serializers import MovieListSerializer, MovieSerializer, CommentListSerializer, CommentSerializer, MovieLikeSerializer, CommentLikeSerializer
+from django.db.models import Count
+import random
 from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404, get_list_or_404
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
@@ -17,7 +20,6 @@ def index(request):
     movies = Movie.objects.all()
     serializer = MovieListSerializer(movies, many=True)
     return Response(serializer.data)
-
 
 @api_view(['GET']) 
 def detail(request, movie_pk): # 각 영화 조회
@@ -67,7 +69,7 @@ def comment_detail(request, comment_pk):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
 @api_view(['GET', 'POST'])
 def movie_likes(request, movie_pk): # 영화 좋아요
     movie = get_object_or_404(Movie, pk=movie_pk)
@@ -101,3 +103,11 @@ def comment_likes(request, comment_pk): # 코멘트 좋아요
         else:
             comment.like_users.add(request.user)
             return Response("like", status=status.HTTP_200_OK)
+
+class RandomMoviesView(APIView):
+    def get(self, request, format=None):
+        count = Movie.objects.aggregate(count=Count('id'))['count']
+        random_indices = random.sample(range(1, count+1), 8)
+        random_movies = Movie.objects.filter(id__in=random_indices)
+        serializer = MovieRandomSerializer(random_movies, many=True)
+        return Response(serializer.data)

@@ -1,10 +1,12 @@
 <template>
     <div>
-
+        <PopularMovies />
     </div>
 </template>
 
 <script setup>
+import PopularMovies from '../components/PopularMovies.vue';
+
 
 </script>
 

@@ -11,6 +11,11 @@ class MovieSerializer(serializers.ModelSerializer):
         model = Movie
         fields = ('poster_path', 'adult', 'title', 'overview', 'genre_ids', 'release_date', 'vote_average', 'vote_count')
 
+class MovieRandomSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Movie
+        fields = ('id', 'title', 'poster_path')
+
 class CommentListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
