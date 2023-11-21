@@ -1,36 +1,21 @@
-
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import get_user_model
-from rest_framework import status
+from rest_framework import status, views
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .serializer import UserSerializer
+from .serializer import UserSerializer, UserLoginSerializer
 
 
-def login(request):
-    if request.method == 'POST':
-        form = AuthenticationForm(request, request.POST)
-        if form.is_valid():
-            auth_login(request, form.get_user())
-            return redirect('movies:index')
-    else:
-        form = AuthenticationForm()
-    context = {
-        'form' : form,
-    }
-    return render(request, 'accounts/login.html', context)
-
-
-@api_view(['POST'])
+@api_view(['POST', 'PUT'])
 def signup(request):
 	#1-1. Client에서 온 데이터를 받아서
     password = request.data.get('password')
-    password_confirmation = request.data.get('passwordConfirmation')
-		
+    passwordConfirmation = request.data.get('passwordConfirmation')
+    print(password, passwordConfirmation)
 	#1-2. 패스워드 일치 여부 체크
-    if password != password_confirmation:
+    if password != passwordConfirmation:
         return Response({'error': '비밀번호가 일치하지 않습니다.'}, status=status.HTTP_400_BAD_REQUEST)
 		
 	#2. UserSerializer를 통해 데이터 직렬화
@@ -40,7 +25,7 @@ def signup(request):
     if serializer.is_valid(raise_exception=True):
         user = serializer.save()
         #4. 비밀번호 해싱 후 
-        user.set_password(request.data.get('password'))
+        user.set_password(password)
         user.save()
     # password는 직렬화 과정에는 포함 되지만 → 표현(response)할 때는 나타나지 않는다.
         return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -64,3 +49,13 @@ def follow(request, username):
     else:
         you.followers.add(me)
         return Response("follow", status=status.HTTP_200_OK)
+    
+@api_view(['POST'])
+def login(request):
+    serializer = UserLoginSerializer(data=request.data)
+    print(serializer)
+
+    if serializer.is_valid():
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    else:
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

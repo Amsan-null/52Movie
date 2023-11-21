@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+import datetime
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -33,27 +34,33 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'movies',
     'accounts',
+    'accounts_api',
     'rest_framework.authtoken',
     'dj_rest_auth',
     'rest_auth',
     'rest_framework',
     'drf_spectacular',
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'django.contrib.sites',
+
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
+
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.staticfiles',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.sites',
     'dj_rest_auth.registration',
+
     'corsheaders',
+
 ]
 SITE_ID = 1
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -62,7 +69,6 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'allauth.account.middleware.AccountMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'final_pjt_back.urls'
@@ -139,13 +145,12 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK = {
-    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema.',
+    'DEFAULT_SCHEMA_CLASSES': 'drf_spectacular.openapi.AutoSchema.',
     
-    'DEFAULT_AUTHENTICATION_CLASS':  ('rest_framework_jwt.authentication.JSONWebTokenAuthentication',  'rest_framework.authentication.SessionAuthentication',
-        'rest_framework.authentication.BasicAuthentication'),
+    'DEFAULT_AUTHENTICATION_CLASSES': ('rest_framework_jwt.authentication.JSONWebTokenAuthentication',  'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication', 'rest_framework.authentication.TokenAuthentication'),
     
-    'DEFAULT_PERMISSION_CLASS': (
-        'rest_framework.permissions.IsAuthenticated',
+    'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.IsAuthenticated',
     'rest_framework.permissions.AllowAny',)
     
 }
@@ -166,3 +171,42 @@ CORS_ALLOWED_ORIGINS = [
 ACCOUNT_EMAIL_REQUIRED = False
 ACCOUNT_EMAIL_VERIFICATION = None
 
+CORS_ORIGIN_ALLOW_ALL = False
+CORS_ORIGIN_WHITELIST = [
+"http://127.0.0.1:8080"
+]
+CORS_ALLOW_METHODS = (
+'DELETE',
+'GET',
+'OPTIONS',
+'PATCH',
+'POST',
+'PUT',
+)
+CORS_ALLOW_HEADERS = (
+'accept',
+'accept-encoding',
+'authorization',
+'access-control-request-method',
+'access-control-request-headers',
+'content-type',
+'dnt',
+'origin',
+'user-agent',
+'x-csrftoken',
+'x-requested-with',
+)
+
+JWT_AUTH = {
+# If the secret is wrong, it will raise a jwt.DecodeError telling you as such. You can still get at the payload by setting the JWT_VERIFY to False.
+'JWT_VERIFY': True,
+# You can turn off expiration time verification by setting JWT_VERIFY_EXPIRATION to False.
+# If set to False, JWTs will last forever meaning a leaked token could be used by an attacker indefinitely.
+'JWT_VERIFY_EXPIRATION': True,
+# This is an instance of Python's datetime.timedelta. This will be added to datetime.utcnow() to set the expiration time.
+# Default is datetime.timedelta(seconds=300)(5 minutes).
+'JWT_EXPIRATION_DELTA': datetime.timedelta(hours=1),
+'JWT_ALLOW_REFRESH': True,
+'JWT_AUTH_HEADER_PREFIX': 'JWT',
+}
+REST_USE_JWT = True
