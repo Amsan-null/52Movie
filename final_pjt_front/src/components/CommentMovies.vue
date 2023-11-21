@@ -6,8 +6,8 @@
         <input type="submit">
         </form>
     </div>
-
-    <li v-for="comment in comments">{{ comment.user.username }} - {{ comment.content }}</li>
+    <!-- {{ comment.user.username }} -  -->
+    <li v-for="comment in comments">{{ comment.content }}</li>
 </template>
 
 <script setup>
@@ -40,10 +40,11 @@ onMounted(fetchComments);
 const createComment = async function () {
   try {
     store.addComment(commentElem.value);
+    const token = localStorage.getItem('jwt')
     await axios.post(`http://127.0.0.1:8000/movies/${store.movieId}/comments/`, {
       content: commentElem.value,
     }, {headers: {
-        Authorization: `Bearer ${store.jwtToken}`,  // JWT 토큰을 헤더에 포함합니다.
+        Authorization: `Bearer ${token}`,  // JWT 토큰을 헤더에 포함합니다.
       },
   });
 

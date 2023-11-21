@@ -7,7 +7,7 @@
     <div v-for = "(movie, idx) in my_like_movies" :key="idx">
       <p>{{ movie.title }}</p>
     </div>
-
+    
     <h2>{{ user.username }}님의 코멘트</h2>
     <h2 v-for="(comment, idx) in comments" :key="idx">
       [{{ comment.movie_title }}] -
@@ -48,10 +48,10 @@ export default {
         this.like_movies = res.data.like_movies
 
        // 무비pk 부분 고치기
-        axios.get(`http://127.0.0.1:8000/movies/${movie_pk}/review/${this.user.id}`, config)
+        axios.get(`http://127.0.0.1:8000/movies/${movie_pk}/comments/`, config)
         
         .then( (res) => {
-          this.reviews = res.data
+          this.comments = res.data
           
         
         })

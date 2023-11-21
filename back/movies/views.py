@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from .models import Movie, Comment
 from accounts.models import User
-from .serializers import MovieListSerializer, MovieSerializer, CommentListSerializer, CommentSerializer, MovieLikeSerializer, CommentLikeSerializer, MovieRandomSerializer
+from .serializers import MovieLikeSerializer, MovieListSerializer, MovieSerializer, CommentListSerializer, CommentSerializer, MovieLikeSerializer, CommentLikeSerializer, MovieRandomSerializer
 from django.db.models import Count
 import random
 from django.http import HttpResponseForbidden
@@ -31,11 +31,8 @@ def detail(request, movie_pk): # 각 영화 조회
 @authentication_classes([JSONWebTokenAuthentication])
 @permission_classes([IsAuthenticated])
 @api_view(['GET', 'POST'])  
-<<<<<<< HEAD
-def comments(request, movie_pk): # 각 코멘트 조회, 생성
-=======
 def comment_create_read(request, movie_pk): # 각 코멘트 조회, 생성
->>>>>>> 928015fc676b081b8796a163212f183628a90731
+
     movie = Movie.objects.get(pk=movie_pk)
     if request.method == 'GET':
         comments = Comment.objects.all()
@@ -76,21 +73,22 @@ def comment_detail(request, comment_pk):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET', 'POST'])
-def movie_likes(request, movie_pk): # 영화 좋아요
+def movie_like(request, movie_pk): # 영화 좋아요
     movie = get_object_or_404(Movie, pk=movie_pk)
-    
-    if request.method == 'GET':
-        serializer = MovieLikeSerializer(movie)
-        return Response(serializer.data, status=status.HTTP_200_OK)
 
-    elif request.method == 'POST':
+    if movie.like_users.filter(pk=request.user.pk).exists():
+        movie.like_users.remove(request.user)
+    else:
+        movie.like_users.add(request.user)
 
-        if request.user in movie.like_users.all():
-            movie.like_users.remove(request.user)
-            return Response("unlike", status=status.HTTP_200_OK)
-        else:
-            movie.like_users.add(request.user)
-            return Response("like", status=status.HTTP_200_OK)
+    serializer = MovieLikeSerializer(movie)
+
+    like_movie_register = {
+        'id' : serializer.data.get('id'),
+        'like_users_count' : movie.like_users.count(),
+        'like_users' : serializer.data.get('like_users'),
+    }
+    return Response(like_movie_register)
 
 @api_view(['GET', 'POST'])
 def comment_likes(request, comment_pk): # 코멘트 좋아요

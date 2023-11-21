@@ -18,4 +18,18 @@ export const useCommentStore = defineStore('comment', () => {
     });
   }
 
-  return { addComment, comments }; }, {persist: true})
+  return { addComment, comments,  }; }, {persist: true})
+
+  export const useUserStore = defineStore({
+    id: 'user',
+    state: () => ({
+      likedMovies: [],
+    }),
+
+    actions: {
+
+      likeMovie(movieId) {
+        this.likedMovies.push(movieId);
+      },
+    },
+  });

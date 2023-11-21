@@ -3,7 +3,9 @@
     <img :src="'https://www.themoviedb.org/t/p/w500/' + movie?.poster_path" alt="poster"/>
     <h1>{{ movie?.title }}</h1>
 
-    <button @click="likeMovie">이 영화가 좋아요!</button>
+    <button v-if="movie?.is_liked" @click="like">좋아요 취소</button>
+    <button v-else @click="like">좋아요</button>
+
 
     <h5 v-for = "genreId in movie?.genre_ids"> # {{ getGenreName(genreId) }} </h5>
     <h5>평점 : {{ formatVoteAverage(movie?.vote_average) }}</h5>
@@ -19,6 +21,7 @@ import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import axios from 'axios';
 import CommentMovies from '../components/CommentMovies.vue';
+import { useUserStore } from '../stores/counter';
 
 export default {
     setup() {
@@ -38,6 +41,7 @@ export default {
             const genre = genres.find((g) => g.id === genreId);
             return genre ? genre.name : "";
         };
+
         // 장르 정의 
         const genres = [
             {
@@ -116,20 +120,55 @@ export default {
                 "id": 37,
                 "name": "서부"
             }
-        ];
+        ]
+    
+    const getToken = () => {
+      const token = localStorage.getItem('jwt');
+      return { headers: { Authorization: `Bearer ${token}` } };
+    };
+
+    const like = async () => {
+
+    const token = localStorage.getItem('jwt');
+      if (!token) {
+        alert('로그인이 필요한 기능입니다.');
+        return;
+      }
+
+      try {
+        // 서버에 좋아요 요청을 보냅니다.
+        const response = await axios.post(`http://127.0.0.1:8000/movies/${movieId}/like/`, {}, {
+          headers: {
+            Authorization: `Bearer ${token}`,  // JWT 토큰을 헤더에 포함합니다.
+          },
+        });
+
+        // 성공적으로 좋아요를 했다면, 좋아요 상태를 업데이트합니다.
+        if (response.data === 'like') {
+          movie.value.is_liked = true;
+        } else {
+          movie.value.is_liked = false;
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+
         onMounted(async () => {
             try {
-                const response = await axios.get(`http://127.0.0.1:8000/movies/${movieId}/`);
+                const response = await axios.get(`http://127.0.0.1:8000/movies/${movieId}/`,getToken());
                 if (!response.data) {
                     throw new Error("영화 정보를 찾을 수 없습니다.");
                 }
                 movie.value = response.data;
+                movie.value.is_liked = response.data.likes ? response.data.likes.includes(userId) : false;
             }
             catch (error) {
                 console.error("영화 정보를 가져오는 중 에러 발생:", error.message);
             }
         });
-        return { movie, genres, formatVoteAverage, getGenreName };
+        return { movie, genres, like, formatVoteAverage, getGenreName, getToken };
     },
     components: { CommentMovies }
 };

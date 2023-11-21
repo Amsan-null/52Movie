@@ -45,6 +45,11 @@ const router = createRouter({
       path: '/movie_detail/:id/comments',
       name: 'comment',
       component: CommentMovies,
+    },
+    {
+      path: '/movie_detail/:id/like/',
+      name: 'like',
+      component: CommentMovies,
     }
 
   ]
