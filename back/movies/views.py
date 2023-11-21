@@ -31,7 +31,11 @@ def detail(request, movie_pk): # 각 영화 조회
 @authentication_classes([JSONWebTokenAuthentication])
 @permission_classes([IsAuthenticated])
 @api_view(['GET', 'POST'])  
+<<<<<<< HEAD
 def comments(request, movie_pk): # 각 코멘트 조회, 생성
+=======
+def comment_create_read(request, movie_pk): # 각 코멘트 조회, 생성
+>>>>>>> 928015fc676b081b8796a163212f183628a90731
     movie = Movie.objects.get(pk=movie_pk)
     if request.method == 'GET':
         comments = Comment.objects.all()
@@ -40,13 +44,14 @@ def comments(request, movie_pk): # 각 코멘트 조회, 생성
     
     if request.method == 'POST':
         serializer = CommentSerializer(data=request.data)
-        if request.user.is_authenticated:
-            if serializer.is_valid(raise_exception=True):
-                serializer.save(user=request.user, movie=movie)
-                return Response(serializer.data, status=status.HTTP_201_CREATED)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        else:
-            return HttpResponseForbidden('로그인이 필요합니다.')
+        print(serializer)
+        # if request.user.is_authenticated:
+        if serializer.is_valid(raise_exception=True):
+            serializer.save(user=request.user, movie=movie)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    # else:
+        # return HttpResponseForbidden('로그인이 필요합니다.')
 
 
 @authentication_classes([JSONWebTokenAuthentication])

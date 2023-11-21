@@ -5,6 +5,7 @@ import SignUpView from '../views/SignUpView.vue'
 import LoginView from '../views/LoginView.vue'
 import MyProfilePageView from '../views/MyProfilePageView.vue'
 import RecommendMovies from '@/components/RecommendMovies.vue'
+import CommentMovies from '@/components/CommentMovies.vue'
 
 
 const router = createRouter({
@@ -40,7 +41,11 @@ const router = createRouter({
       name: 'recommend',
       component: RecommendMovies,
     },
-
+    {
+      path: '/movie_detail/:id/comments',
+      name: 'comment',
+      component: CommentMovies,
+    }
 
   ]
 })

@@ -8,3 +8,14 @@ export const useLoginStore = defineStore('login', () => {
   }
   return { isLogin, doLogin }
 }, { persist: true })
+
+export const useCommentStore = defineStore('comment', () => {
+  const comments = ref([]);
+
+  const addComment = function (commentElem) {
+    comments.value.push({
+      content: commentElem
+    });
+  }
+
+  return { addComment, comments }; }, {persist: true})
