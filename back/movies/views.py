@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from .models import Movie, Comment
 from accounts.models import User
-from .serializers import MovieListSerializer, MovieSerializer, CommentListSerializer, CommentSerializer, MovieLikeSerializer, CommentLikeSerializer
+from .serializers import MovieListSerializer, MovieSerializer, CommentListSerializer, CommentSerializer, MovieLikeSerializer, CommentLikeSerializer, MovieRandomSerializer
 from django.db.models import Count
 import random
 from django.http import HttpResponseForbidden
@@ -31,7 +31,7 @@ def detail(request, movie_pk): # 각 영화 조회
 @authentication_classes([JSONWebTokenAuthentication])
 @permission_classes([IsAuthenticated])
 @api_view(['GET', 'POST'])  
-def comment_create(request, movie_pk): # 각 코멘트 조회, 생성
+def comment_create_read(request, movie_pk): # 각 코멘트 조회, 생성
     movie = Movie.objects.get(pk=movie_pk)
     if request.method == 'GET':
         comments = Comment.objects.all()
@@ -40,13 +40,14 @@ def comment_create(request, movie_pk): # 각 코멘트 조회, 생성
     
     if request.method == 'POST':
         serializer = CommentSerializer(data=request.data)
-        if request.user.is_authenticated:
-            if serializer.is_valid(raise_exception=True):
-                serializer.save(user=request.user, movie=movie)
-                return Response(serializer.data, status=status.HTTP_201_CREATED)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        else:
-            return HttpResponseForbidden('로그인이 필요합니다.')
+        print(serializer)
+        # if request.user.is_authenticated:
+        if serializer.is_valid(raise_exception=True):
+            serializer.save(user=request.user, movie=movie)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    # else:
+        # return HttpResponseForbidden('로그인이 필요합니다.')
 
 
 @authentication_classes([JSONWebTokenAuthentication])

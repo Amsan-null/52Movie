@@ -26,7 +26,7 @@ export default {
     const { doLogin } = useLoginStore()
     const login = async () => {
       try {
-        const res = await axios.post(`http://127.0.0.1:8000/accounts/api-token-auth/`, credentials.value);
+        const res = await axios.post(`http://127.0.0.1:8000/accounts/login/`, credentials.value);
         localStorage.setItem('jwt', res.data.token);
         emit('login');
         doLogin() // Store -> login -> True

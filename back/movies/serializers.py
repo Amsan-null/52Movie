@@ -19,14 +19,14 @@ class MovieRandomSerializer(serializers.ModelSerializer):
 class CommentListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
-        fields = ('content', 'rating' )
-        read_only_fields =	('movie', 'user', 'writer')
+        fields = ('content' )
+        read_only_fields =	('movie', 'user')
 
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
-        fields = ('content', 'rating')
-        read_only_fields =	('movie', 'user', 'writer')
+        fields = '__all__'
+        read_only_fields =	('movie', 'user', 'like_users',)
 
 class MovieLikeSerializer(serializers.ModelSerializer):
     user = serializers.SerializerMethodField()
