@@ -4,29 +4,32 @@ from .models import Movie, Comment
 class MovieListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Movie
-        fields = ('poster_path', 'adult', 'title', 'overview', 'genre_ids', 'release_date', 'vote_average', 'vote_count')
+        fields = '__all__'
     
 class MovieSerializer(serializers.ModelSerializer):
     class Meta:
         model = Movie
-        fields = ('poster_path', 'adult', 'title', 'overview', 'genre_ids', 'release_date', 'vote_average', 'vote_count')
+        fields = '__all__'
+        read_only_fields = ('like_users')
 
 class MovieRandomSerializer(serializers.ModelSerializer):
     class Meta:
         model = Movie
         fields = ('id', 'title', 'poster_path')
 
-class CommentListSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Comment
-        fields = ('content' )
-        read_only_fields =	('movie', 'user')
 
 class CommentSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Comment
-        fields = '__all__'
-        read_only_fields =	('movie', 'user', 'like_users',)
+
+  userName = serializers.SerializerMethodField()
+  
+  def get_userName(self,obj):
+    return obj.user.username
+
+class Meta:
+    model = Comment
+    fields = '__all__'
+    read_only_fields =	('movie', 'user')
+
 
 class MovieLikeSerializer(serializers.ModelSerializer):
     user = serializers.SerializerMethodField()

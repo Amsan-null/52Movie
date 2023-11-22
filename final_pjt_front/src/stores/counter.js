@@ -33,3 +33,20 @@ export const useCommentStore = defineStore('comment', () => {
       },
     },
   });
+
+  
+export default {
+  state: {
+    reviews: []
+  },
+  mutations: {
+    CREATE_REVIEW: function (state, review) {
+      state.reviews.push(review)
+    },
+  },
+  actions: {
+    createReview: function ({ commit }, review) {
+      commit("CREATE_REVIEW", review)
+    },
+  },
+}

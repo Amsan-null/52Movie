@@ -3,8 +3,23 @@
     <img :src="'https://www.themoviedb.org/t/p/w500/' + movie?.poster_path" alt="poster"/>
     <h1>{{ movie?.title }}</h1>
 
-    <button v-if="movie?.is_liked" @click="like">좋아요 취소</button>
-    <button v-else @click="like">좋아요</button>
+    <!-- <button v-if="movie?.is_liked" @click="like">좋아요 취소</button>
+    <button v-else @click="like">좋아요</button> -->
+    <div>
+        <span>
+          <div v-if="is_liked">
+            <button
+            @click="likeMovie"
+            >
+            좋아요 취소
+            </button>
+          </div>
+          <div v-else>
+            <button
+            @click="likeMovie">좋아요</button>
+          </div>
+        </span>
+      </div>
 
 
     <h5 v-for = "genreId in movie?.genre_ids"> # {{ getGenreName(genreId) }} </h5>

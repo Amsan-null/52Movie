@@ -17,7 +17,7 @@ const router = createRouter({
       component: MainPageView
     },
     {
-      path: '/movie_detail/:id',
+      path: '/movie_detail/:movie_id',
       name: 'movie_detail',
       component: MovieDetailView
     },
@@ -37,7 +37,7 @@ const router = createRouter({
       component: MyProfilePageView,
     },
     {
-      path: '/recommend',
+      path: '/movies/recommend',
       name: 'recommend',
       component: RecommendMovies,
     },
