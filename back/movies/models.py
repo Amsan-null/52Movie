@@ -26,8 +26,15 @@ class Genre(models.Model):
     name = models.CharField(max_length=100)
 
 
-class Comment(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True, related_name='comments')
-    movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
-    content = models.TextField()
+# class Comment(models.Model):
+#     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True, related_name='comments')
+#     movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
+#     content = models.TextField()
     # like_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='like_comments')
+
+class Comment(models.Model):
+    content = models.TextField()
+    # 게시글이 달린 영화
+    write_comment_movie = models.ForeignKey('movies.Movie', on_delete=models.CASCADE, related_name='write_movie_comment', null=True, blank=True)
+    # 게시글을 작성한 사용자
+    write_comment_user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='write_comment') 

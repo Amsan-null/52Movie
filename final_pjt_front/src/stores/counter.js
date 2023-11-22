@@ -1,52 +1,93 @@
+import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+import axios from 'axios'
 
-export const useLoginStore = defineStore('login', () => {
-  const isLogin = ref(false)
-  const doLogin = () => {
-    isLogin.value = true
+export const useCounterStore = defineStore('counter', () => {
+  const router = useRouter()
+  const comments = ref([])
+  const API_URL = 'http://127.0.0.1:8000'
+  const token = ref(null)
+  const isLogin = computed(() => {
+    if (token.value === null) {
+      return false
+    } else {
+      return true
+    }
+  })
+
+
+  const getComments = function () {
+    axios({
+      method: 'get',
+      url: `${API_URL}/movies/${movie_id}/comments`,
+      headers: {
+        Authorization: `Token ${token.value}`
+      }
+    })
+      .then((res) =>{
+        comments.value = res.data
+      })
+      .catch((err) => {
+        console.log(err)
+      })
   }
-  return { isLogin, doLogin }
+
+
+  const signUp = function (payload) {
+    const { username, password1, password2 } = payload
+
+    axios({
+      method: 'post',
+      url: `${API_URL}/accounts/signup/`,
+      data: {
+        username, password1, password2
+      }
+    })
+      .then((res) => {
+        console.log(res)
+        const password = password1
+        logIn({ username, password })
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }
+
+
+  const logIn = function (payload) {
+    const { username, password } = payload
+
+    axios({
+      method: 'post',
+      url: `${API_URL}/accounts/login/`,
+      data: {
+        username, password
+      }
+    })
+      .then((res) => {
+        token.value = res.data.key
+        router.push({ name: 'main' })
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }
+
+  const logOut = function () {
+    axios({
+      method: 'post',
+      url: `${API_URL}/accounts/logout/`,
+    })
+      .then((res) => {
+        token.value = null
+        router.push({ name: 'main' })
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }
+
+  return { comments, API_URL, getComments, signUp, logIn, token, isLogin, logOut }
 }, { persist: true })
 
-export const useCommentStore = defineStore('comment', () => {
-  const comments = ref([]);
-
-  const addComment = function (commentElem) {
-    comments.value.push({
-      content: commentElem
-    });
-  }
-
-  return { addComment, comments,  }; }, {persist: true})
-
-  export const useUserStore = defineStore({
-    id: 'user',
-    state: () => ({
-      likedMovies: [],
-    }),
-
-    actions: {
-
-      likeMovie(movieId) {
-        this.likedMovies.push(movieId);
-      },
-    },
-  });
-
-  
-export default {
-  state: {
-    reviews: []
-  },
-  mutations: {
-    CREATE_REVIEW: function (state, review) {
-      state.reviews.push(review)
-    },
-  },
-  actions: {
-    createReview: function ({ commit }, review) {
-      commit("CREATE_REVIEW", review)
-    },
-  },
-}

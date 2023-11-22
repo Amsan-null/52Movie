@@ -34,7 +34,6 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'movies',
     'accounts',
-    'accounts_api',
     'rest_framework.authtoken',
     'dj_rest_auth',
     'rest_auth',

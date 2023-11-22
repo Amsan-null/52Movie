@@ -4,6 +4,8 @@ from django.contrib.auth.password_validation import validate_password
 from rest_framework.authtoken.models import Token # Token 모델
 from rest_framework.validators import UniqueValidator # 이메일 중복 방지를 위한 검증 도구
 from movies.models import Movie, Comment
+from dj_rest_auth.registration.serializers import RegisterSerializer
+from dj_rest_auth.serializers import UserDetailsSerializer
 from rest_framework_jwt.serializers import JSONWebTokenSerializer
 from rest_framework_jwt.settings import api_settings
 
@@ -23,8 +25,6 @@ class CommentSerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
-    # write_only는 시리얼라이징은 하지만 응답에는 포함시키지 않는다는 의미
-    # 비밀번호를 응답에 표현한다면 보안상의 유출이 되는 것이기 떄문
 
     password = serializers.CharField(write_only=True)
 
@@ -33,61 +33,82 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ('username', 'password', 'passwordConfirmation',)
         read_only_fields = ('reviews', 'like_movies')
 
+class UserMovieListSerializer(serializers.ModelSerializer):
 
-class UserProfileSerializer(serializers.ModelSerializer):
-    followings = serializers.SerializerMethodField()
-    like_movies = serializers.SerializerMethodField()
-    like_comments = serializers.SerializerMethodField()
-    followers = serializers.SerializerMethodField()
+    class MovieSerializer(serializers.ModelSerializer):
+
+        class Meta:
+            model = Movie
+            fields = ('id', 'title', 'poster_path',)
+    
+
+    # 좋아요 한 영화 목록
+    like_movies = MovieSerializer(many=True)
 
     class Meta:
         model = User
-        fields = ['id', 'username', 'followings', 'followers', 'like_movies', 'like_comments']
+        # 사용자 id, 좋아요한 영화 목록, 
+        fields = ('id', 'like_movies',)
 
-    def get_followers(self, obj):
-        return UserSerializer(obj.followers.all(), many=True).data
+# 내 프로필 조회
+class ProfileSerializer(UserDetailsSerializer):
+
+    class UserSerializer(serializers.ModelSerializer):
+        class Meta:
+            model = User
+            fields = ('id',)
     
-    def get_followings(self, obj):
-        return UserSerializer(obj.followings.all(), many=True).data
+    class Meta:
+        model = User
+        # 이 부분에 정의되는 부분만 수정 가능('followings : 팔로워')
+        fields = ('id' , 'followers', 'username', 'profile',)
 
-    def get_like_movies(self, obj):
-        return MovieSerializer(obj.like_movies.all(), many=True).data
+# 상대방 프로필 조회 
+class UserProfileSerializer(UserDetailsSerializer):
 
-    def get_like_comments(self, obj):
-        return CommentSerializer(obj.like_comments.all(), many=True).data
+    class Meta:
+        model = User
+        fields = ('id' ,'username', 'profile', )
+
+class AccountSignUpSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = '__all__'
 
 
-class UserLoginSerializer(serializers.Serializer):
-    username = serializers.CharField()
-    password = serializers.CharField(write_only=True)
-    token = serializers.SerializerMethodField()
 
-    def validate(self, data):
-        username = data.get("username", "")
-        password = data.get("password", "")
+# class UserLoginSerializer(serializers.Serializer):
+#     username = serializers.CharField()
+#     password = serializers.CharField(write_only=True)
+#     token = serializers.SerializerMethodField()
 
-        if username and password:
-            user = authenticate(username=username, password=password)
+#     def validate(self, data):
+#         username = data.get("username", "")
+#         password = data.get("password", "")
 
-            if user:
-                if not user.is_active:
-                    raise serializers.ValidationError("User is deactivated.")
-            else:
-                raise serializers.ValidationError("Unable to login with provided credentials.")
-        else:
-            raise serializers.ValidationError("Must include 'username' and 'password'.")
+#         if username and password:
+#             user = authenticate(username=username, password=password)
 
-        data['user'] = user
-        return data
+#             if user:
+#                 if not user.is_active:
+#                     raise serializers.ValidationError("User is deactivated.")
+#             else:
+#                 raise serializers.ValidationError("Unable to login with provided credentials.")
+#         else:
+#             raise serializers.ValidationError("Must include 'username' and 'password'.")
 
-    def get_token(self, obj):
-        user = obj['user']
-        jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
-        jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
+#         data['user'] = user
+#         return data
 
-        payload = jwt_payload_handler(user)
-        token = jwt_encode_handler(payload)
-        return token
+#     def get_token(self, obj):
+#         user = obj['user']
+#         jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
+#         jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
+
+#         payload = jwt_payload_handler(user)
+#         token = jwt_encode_handler(payload)
+#         return token
 
 
 

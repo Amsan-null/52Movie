@@ -5,7 +5,7 @@
 </template>
 
 <script setup>
-import PopularMovies from '../components/PopularMovies.vue';
+import PopularMovies from './PopularMovies.vue';
 
 
 </script>
