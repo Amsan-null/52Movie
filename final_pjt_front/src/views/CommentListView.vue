@@ -113,20 +113,18 @@ export default {
 </style> -->
 
 <template>
-  <div>
-    <CommentListItemView 
-      v-for="comment in store.comments"
-      :key="comment.id"
-      :comment="comment"
-    />
-  </div>
+  <li>
+    <span>{{ comment.content }}</span>
+  </li>
 </template>
 
 <script setup>
-import { useCounterStore } from '@/stores/counter'
-import CommentListItemView from './CommentListItemView.vue';
+// import { useCounterStore } from '@/stores/counter'
+// import CommentListItemView from './CommentListItemView.vue';
 
-const store = useCounterStore()
+const props = defineProps({
+    comment: Object
+});
 
 
 </script>

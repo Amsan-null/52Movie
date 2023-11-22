@@ -25,8 +25,8 @@
     <h5>개봉 일자 : {{ movie?.release_date }}</h5>
     <h5>{{ movie?.overview }}</h5>
 
-    <CreateCommentView :movie="movie"/>
-    <CommentListView :movie="movie"/>
+    <CreateCommentView :movieId="movie.id"/>
+    <CommentListView :movieId="movie.id"/>
   </div>
 
 </template>

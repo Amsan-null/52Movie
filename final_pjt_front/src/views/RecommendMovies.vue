@@ -7,11 +7,6 @@
 
         <div v-for = "(movie, idx) in my_users_like_movies"
         :key="idx">
-        <!--해당하는 movie의 포스터, 이름 출력-->
-        <!-- <MovieCard2
-          :movie="movie"
-        />
-         -->
     </div>
 </template>
 

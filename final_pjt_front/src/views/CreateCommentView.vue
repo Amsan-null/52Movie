@@ -17,33 +17,34 @@
   import { useCounterStore } from '@/stores/counter'
   import { useRouter } from 'vue-router'
   
-  const content = ref(null)
+  const content = ref('')
   const store = useCounterStore()
   const router = useRouter()
   const props = defineProps({
-  movie: {
-    type: Object,
-  },
+    movieId: Number
 });
-  const createComment = function () {
-    axios({
-      method: 'post',
-      url: `${store.API_URL}/movies/${props.movie.id}/comment/`,
-      data: {
-        content: content.value
-      },
-      headers: {
-        Authorization: `Token ${store.token}`
-      }
-    })
-    // console.log(content)
-      .then((res) => {
-        router.push({ name: 'MovieDetailView' })
-      })
-      .catch((err) => {
-        console.log(err)
-      })
-  }
+const createComment = function () {
+  store.commentCreate(props.movieId, content.value)
+}
+  // const createComment = function () {
+  //   axios({
+  //     method: 'post',
+  //     url: `${store.API_URL}/movies/${props.movieId}/comment/`,
+  //     data: {
+  //       content: content.value
+  //     },
+  //     headers: {
+  //       Authorization: `Token ${store.token}`
+  //     }
+  //   })
+  //   // console.log(content)
+  //     .then((res) => {
+  //       router.push({ name: 'MovieDetailView' })
+  //     })
+  //     .catch((err) => {
+  //       console.log(err)
+  //     })
+  // }
   
   
   

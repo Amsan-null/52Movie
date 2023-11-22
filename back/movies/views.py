@@ -76,7 +76,6 @@ def comment_create_with_movie(request, movie_pk):
     movie = get_object_or_404(Movie, pk=movie_pk)
     serializer = CommentSerializer(data=request.data)
     if serializer.is_valid(raise_exception=True):
-
         serializer.save(write_comment_user = request.user, write_comment_movie=movie)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     
