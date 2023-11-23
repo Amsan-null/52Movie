@@ -1,17 +1,23 @@
 <template>
-  <div>
-    <img :src="'https://www.themoviedb.org/t/p/w500/' + movie?.poster_path" alt="poster"/>
-    <h1>{{ movie?.title }}</h1>
+    <div class="movie-details">
+      <div class="left-column">
+        <img :src="'https://www.themoviedb.org/t/p/w500/' + movie?.poster_path" alt="poster" class="rounded-image"/>
+      </div>
+      <div class="right-column">
+          <h1>{{ movie?.title }}</h1>
+          <h5>★ {{ formatVoteAverage(movie?.vote_average) }}</h5>
+          <div class="genre">
+        <div v-for="genreId in movie?.genre_ids"> # {{ getGenreName(genreId) }} </div></div>
 
-    <h5 v-for = "genreId in movie?.genre_ids"> # {{ getGenreName(genreId) }} </h5>
-    <h5>평점 : {{ formatVoteAverage(movie?.vote_average) }}</h5>
-    <h5>개봉 일자 : {{ movie?.release_date }}</h5>
-    <h5>{{ movie?.overview }}</h5>
-
-    <CreateCommentView :movie="movie" @commentCreated="handleCommentCreated"/>
-  </div>
-
-</template>
+        <div class="movieinfo">
+        <h5>{{ movie?.release_date }} 개봉</h5>
+        <h5>{{ movie?.overview }}</h5>
+        </div>
+  
+    </div>
+</div>
+<CreateCommentView :movie="movie" @commentCreated="handleCommentCreated"/>
+  </template>
 
 <script>
 import { onMounted, ref } from 'vue';
@@ -161,5 +167,51 @@ export default {
 
 
 <style scoped>
+@import url("https://fonts.googleapis.com/css2?family=Jua&display=swap");
+.movie-details {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 20px;
+  font-family: 'Jua', sans-serif;
+}
 
+.left-column {
+  flex: 1;
+  margin-right: 20px;
+  border-radius: 15px; 
+  overflow: hidden; 
+}
+
+.left-column img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 15px; 
+}
+
+.right-column {
+  flex: 2;
+  background-color: #f0f0f0; 
+  border-radius: 15px; 
+  padding: 20px; 
+  margin-bottom: 10px;
+}
+
+
+.rounded-image {
+  border-radius: 15px; 
+}
+
+.genre {
+  font-size: 17px;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.movieinfo > * {
+    margin-bottom: 15px;
+    letter-spacing: 1px;
+
+}
 </style>

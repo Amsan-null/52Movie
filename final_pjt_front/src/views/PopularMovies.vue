@@ -1,12 +1,12 @@
 <template>
   <div class="movie-list">
-    <h1>인기 영화들</h1>
+    <h1 class="section-title">Popular Movies</h1>
     <div class="movie-container">
       <div v-for="movie in movies" :key="movie.id" class="movie-item">
-        <router-link :to="`/movies/${movie.id}`">
-          <img :src="'https://www.themoviedb.org/t/p/w200/' + movie.poster_path" alt="poster"/>
+        <router-link :to="`/movies/${movie.id}`" class="movie-link">
+          <img :src="'https://www.themoviedb.org/t/p/w200/' + movie.poster_path" alt="poster" class="movie-poster"/>
         </router-link>
-        <h3>{{ movie.title }}</h3>
+        <h3 class="movie-title">{{ movie.title }}</h3>
       </div>
     </div>
   </div>
@@ -37,6 +37,16 @@ export default defineComponent({
 <style scoped>
 .movie-list {
   margin: 20px;
+  font-family: 'Jua', sans-serif;
+}
+
+.section-title {
+  font-size: 2rem;
+  margin-bottom: 20px;
+  background-color: #e4e4e4; 
+  border-radius: 10px; 
+  padding: 10px; 
+  display: inline-block; 
 }
 
 .movie-container {
@@ -48,5 +58,24 @@ export default defineComponent({
 .movie-item {
   width: 200px;
   text-align: center;
+}
+
+.movie-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.movie-poster {
+  width: 100%;
+  border-radius: 10px; 
+  overflow: hidden; 
+}
+
+.movie-title {
+  margin-top: 10px;
+  font-size: 1.2rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 </style>

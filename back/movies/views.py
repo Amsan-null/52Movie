@@ -33,7 +33,7 @@ def movie_detail(request, movie_pk):
 class RandomMoviesView(APIView):
     def get(self, request, format=None):
         count = Movie.objects.aggregate(count=Count('id'))['count']
-        random_indices = random.sample(range(1, count+1), 24)
+        random_indices = random.sample(range(1, count+1), 25)
         random_movies = Movie.objects.filter(id__in=random_indices)
         serializer = MovieRandomSerializer(random_movies, many=True)
         return Response(serializer.data)

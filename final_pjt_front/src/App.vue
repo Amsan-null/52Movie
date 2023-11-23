@@ -1,38 +1,92 @@
 <template>
-  <h1>52영화!</h1>
-  <img src="@/assets/logo.png" alt="logo">
-  <header>
+  <div class="container p-3 all-text">
+    <header>
 
-<div v-if="store.isLogin">
-  <nav>
-    <RouterLink :to="{ name: 'main' }">홈</RouterLink> |
-    <RouterLink :to="{ name: 'recommend' }">영화추천받기</RouterLink> |
-    <a href="/" @click="store.logOut">Logout</a> |
-    <RouterLink :to="{ name: 'MyProfile' }">마이프로필</RouterLink>
-  </nav>
-</div>
+      <nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-secondary">
+        
+        
+        <div v-if="store.isLogin" class="collapse navbar-collapse justify-content-end">
+          <ul class="navbar-nav">
+            <router-link class="navbar-brand" :to="{ name: 'main' }">Home</router-link>
+            <li class="nav-item">
+              <router-link class="nav-link" :to="{ name: 'recommend' }">Recommned</router-link>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/" @click="store.logOut">Logout</a>
+            </li>
+            <li class="nav-item">
+              <router-link class="nav-link" :to="{ name: 'MyProfile' }">Mypage</router-link>
+            </li>
+          </ul>
+        </div>
 
-<div v-else>
-  <nav>
-    <RouterLink :to="{ name: 'main' }">홈</RouterLink> |
-    <RouterLink :to="{ name: 'login' }">로그인</RouterLink> |
-    <RouterLink :to="{ name: 'SignUpView' }">회원가입</RouterLink>
-  </nav>
-</div>
+        <div v-else class="collapse navbar-collapse justify-content-end">
+          <ul class="navbar-nav">
+            <router-link class="navbar-brand" :to="{ name: 'main' }">Home</router-link>
+            <li class="nav-item">
+              <router-link class="nav-link" :to="{ name: 'login' }">Login</router-link>
+            </li>
+            <li class="nav-item">
+              <router-link class="nav-link" :to="{ name: 'SignUpView' }">Sign up</router-link>
+            </li>
+          </ul>
+        </div>
 
-  </header>
+      </nav>
 
-  <RouterView />
+    </header>
 
+    <router-view />
+
+  </div>
 </template>
 
-  <script setup>
-  import { useCounterStore } from '@/stores/counter'
-  const store = useCounterStore()
+<script setup>
+import { useCounterStore } from '@/stores/counter'
+const store = useCounterStore()
+</script>
 
-  </script>
+<style>
+/* body {
+  background-color: rgb(43, 43, 43);
+} */
 
 
-<style scoped>
+h1 {
+  font-size: 2.5rem;
+  text-align: left;
+}
+
+
+h1.my-4 {
+  margin-top: 40px; 
+}
+
+
+img {
+  display: block;
+}
+
+
+header {
+  padding: 20px 0;
+}
+
+.navbar .nav-link {
+  color: white;
+}
+
+
+.navbar .nav-link:hover {
+  color: rgb(255, 218, 7); 
+}
+
+.navbar-nav .nav-item {
+  margin-right: 10px;
+}
+
+.all-text {
+  font-family: 'Jua', sans-serif;
+}
 
 </style>
