@@ -10,10 +10,11 @@ from django.contrib.auth import get_user_model
 import jwt
 import random
 from django.conf import settings
-from .serializers import MovieCommentSerializer, MovieLikeSerialzer, MovieListSerializer, MovieSerializer, CommentSerializer, MovieRandomSerializer
+from .serializers import MovieCommentSerializer, MovieSerializer, CommentSerializer, MovieRandomSerializer
 from rest_framework.decorators import authentication_classes, permission_classes
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
+from rest_framework.authentication import TokenAuthentication
 
 User = get_user_model()
 
@@ -26,7 +27,7 @@ def movies(request):
 @api_view(['GET'])
 def movie_detail(request, movie_pk):
     movie = get_object_or_404(Movie, pk=movie_pk)
-    serializer = MovieSerializer(movie)
+    serializer = MovieCommentSerializer(movie)
     return Response(serializer.data)
 
 class RandomMoviesView(APIView):
@@ -56,28 +57,42 @@ class RandomMoviesView(APIView):
 #         return Response(serializer.data)
 
 @api_view(['GET'])
-@permission_classes([IsAuthenticated]) 
+@authentication_classes([TokenAuthentication])
 def comment_list(request):
     # 코멘트 전체 조회
     def comment_list():
         comments = get_list_or_404(Comment)
         serializer = MovieCommentSerializer(comments, many=True)
         return Response(serializer.data)
-
-
     if request.method == 'GET':
         return comment_list()
+    
+@authentication_classes([TokenAuthentication])
+@api_view(['DELETE'])
+def comment_delete(request, movie_pk, comment_pk):
+    movie = Movie.objects.get(pk=movie_pk)
+    comment = movie.write_movie_comment.get(pk=comment_pk)
+    comment.delete()
+    return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-# 영화를 선택한 코멘트 생성
-@api_view(['POST'])
-@permission_classes([IsAuthenticated])
+# 영화를 선택한 코멘트 생성, 전체 코멘트 조회
+@api_view(['GET', 'POST'])
+@authentication_classes([TokenAuthentication])
 def comment_create_with_movie(request, movie_pk):
     movie = get_object_or_404(Movie, pk=movie_pk)
-    serializer = CommentSerializer(data=request.data)
-    if serializer.is_valid(raise_exception=True):
-        serializer.save(write_comment_user = request.user, write_comment_movie=movie)
+
+    if request.method == 'GET':
+        comments = get_list_or_404(Comment, write_comment_movie=movie)
+        serializer = MovieCommentSerializer(comments, many=True)
+        # serializer = MovieCommentSerializer(data=request.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    if request.method == 'POST':
+        serializer = CommentSerializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save(write_comment_user = request.user, write_comment_movie=movie)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
     
 
 # @api_view(['DELETE'])

@@ -22,12 +22,9 @@ from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('movies/', include('movies.urls')),
-    path('accounts1/', include('accounts.urls')),
+    # path('accounts1/', include('accounts.urls')),
     path('accounts/', include('dj_rest_auth.urls')),
     path('accounts/signup/', include('dj_rest_auth.registration.urls')),
-    # path('accounts/login/', include('rest_auth.urls')),
-    #user.api의 모든 url 정보를 받아오는 path 설정 (include)
-    # path("api/", include("accounts_api.urls")),
     path("api-auth/", include("rest_framework.urls")),
     # #login, registration등 path 설정
     path("api/rest-auth/", include("rest_auth.urls")),

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>Login</h1>
+    <h1>로그인</h1>
     <form @submit.prevent="logIn">
       아이디:<input type="text" v-model.trim="username">
       비밀번호:<input type="password" v-model.trim="password">

@@ -16,25 +16,21 @@ export const useCounterStore = defineStore('counter', () => {
     }
   })
 
-  const commentCreate = function (pk, content) {
+  const commentCreate = function (movie_id, content) {
     axios({
       method: 'post',
-      url: `http://127.0.0.1:8000/movies/${pk}/comment/`,
+      url: `${API_URL}/movies/${movie_id}/comment/`,
+      headers: {
+        Authorization: `Token ${token.value}`
+      },
       data: {
         content
       }
     })
-    .then(res => detailMovie.write_movie_comment.push(res.data))
-    .catch(err => console.log(err))
-  }
+    .then((res) => {
 
-  const detailMovie = ref([])
-  const getDetailMovie = function (pk) {
-    axios({
-      method: 'get',
-      url: `http://127.0.0.1:8000/movies/${pk}`
+      router.push({ name: 'movie_detail' })
     })
-    .then(res => detailMovie.value = res.data)
     .catch(err => console.log(err))
   }
 
@@ -109,6 +105,6 @@ export const useCounterStore = defineStore('counter', () => {
       })
   }
 
-  return { commentCreate, getDetailMovie, detailMovie, comments, API_URL, getComments, signUp, logIn, token, isLogin, logOut }
+  return { commentCreate, comments, API_URL, getComments, signUp, logIn, token, isLogin, logOut}
 }, { persist: true })
 

@@ -43,7 +43,7 @@ const router = createRouter({
 
     // 코멘트 생성
     {
-      path: '/create',
+      path: '/movies/:id',
       name: 'CreateCommentView',
       component: CreateCommentView
     },

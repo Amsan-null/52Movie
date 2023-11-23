@@ -6,35 +6,36 @@ from rest_framework import status, views
 from rest_framework import status
 from movies.models import Movie
 from rest_framework.permissions import *
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.response import Response
 from django.http import JsonResponse
 from .serializer import UserMovieListSerializer, ProfileSerializer, UserSerializer, AccountSignUpSerializer, UserProfileSerializer
 import random
+from rest_framework.authentication import TokenAuthentication
 
 User = get_user_model()
 
 # 회원가입
 # 인증 필요 없이 접근 가능한 영역 : 추후 인증 필요
 @api_view(['POST'])
-@permission_classes([AllowAny])
+@authentication_classes([TokenAuthentication])
 def signup(request):
     serializer = AccountSignUpSerializer(data=request.data)
     if serializer.is_valid(raise_exception=True):
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-def recommend(request, user_pk):
-    Users = get_object_or_404(User, pk=user_pk)
-    serializer = UserMovieListSerializer(Users)
-    like_lst = serializer.data.get('like_movies') # 리스트
-    if like_lst: # 좋아요한 영화가 있는 경우
-        random_list = []
-        for i in range(len(like_lst)):
-            random_list.append(like_lst[i].get('title'))
-        pick_movie = random.choice(random_list)
-    else: # 좋아요한 영화가 없는 경우
-        pick_movie = Movie.objects.values('title').order_by('?').first().get('title')
+# def recommend(request, user_pk):
+#     Users = get_object_or_404(User, pk=user_pk)
+#     serializer = UserMovieListSerializer(Users)
+#     like_lst = serializer.data.get('like_movies') # 리스트
+#     if like_lst: # 좋아요한 영화가 있는 경우
+#         random_list = []
+#         for i in range(len(like_lst)):
+#             random_list.append(like_lst[i].get('title'))
+#         pick_movie = random.choice(random_list)
+#     else: # 좋아요한 영화가 없는 경우
+#         pick_movie = Movie.objects.values('title').order_by('?').first().get('title')
 
 # @api_view(['POST', 'PUT'])
 # def signup(request):
@@ -59,48 +60,49 @@ def recommend(request, user_pk):
 #         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 # 내 프로필 정보 조회 및 수정
-@api_view(['GET', 'PUT'])
-@permission_classes([IsAuthenticated]) # 인증된 사용자만 권한 허용
-def profile_update(request, username):
-    Users = get_object_or_404(User, username=username)
-    if request.user == User:
-        serializer = ProfileSerializer(instance=Users, data=request.data)
-        if serializer.is_valid(raise_exception=True):
-            serializer.save()
-            serializer = ProfileSerializer(Users)
-            return Response(serializer.data)
-
-# 회원탈퇴
-@api_view(['POST'])
-@permission_classes([IsAuthenticated]) # 인증된 사용자만 권한 허용
-def user_delete(request):
-    request.user.delete()
-    data = {
-            'content': f'{request.user}님의 탈퇴처리가 완료되었습니다.',
-        }
-    return Response(data, status=status.HTTP_204_NO_CONTENT)
-
-# 상대 프로필 조회
+# @api_view(['GET', 'PUT'])
+# @authentication_classes([TokenAuthentication]) # 인증된 사용자만 권한 허용
+# def profile_update(request, username):
+#     Users = get_object_or_404(User, username=username)
+#     if request.user == User:
+#         serializer = ProfileSerializer(instance=Users, data=request.data)
+#         if serializer.is_valid(raise_exception=True):
+#             serializer.save()
+#             serializer = ProfileSerializer(Users)
+#             return Response(serializer.data)
+        
 @api_view(['GET'])
-@permission_classes([IsAuthenticated]) # 인증된 사용자만 권한 허용
-def user_profile(request, user_pk):
-    user = get_object_or_404(User, pk=user_pk)
-    serializer = UserProfileSerializer(user)
-    return Response(serializer.data)
+@authentication_classes([TokenAuthentication]) # 인증된 사용자만 권한 허용
+def my_profile(request, my_pk):
+    Users = get_object_or_404(User, pk=my_pk)
+    serializer = ProfileSerializer(instance=Users, data=request.data)
+    if serializer.is_valid(raise_exception=True):
+        serializer.save()
+        serializer = ProfileSerializer(Users)
+        return Response(serializer.data)
 
 
-# 사용자가 좋아요/위시리스트/평점을 준 영화 목록 조회
-@api_view(['GET'])
-@permission_classes([IsAuthenticated]) # 인증된 사용자만 권한 허용
-def user_movie_list(request, user_pk):
-    Users = get_object_or_404(User, pk=user_pk)
-    serializer = UserMovieListSerializer(Users)
-    user_list = {
-        'id' : serializer.data.get('id'),
-        'like_movies_count' : Users.like_movies.count(),
-        'like_movies' : serializer.data.get('like_movies'),
-    }
-    return JsonResponse(user_list)
+# # 상대 프로필 조회
+# @api_view(['GET'])
+# @authentication_classes([TokenAuthentication]) # 인증된 사용자만 권한 허용
+# def user_profile(request, user_pk):
+#     user = get_object_or_404(User, pk=user_pk)
+#     serializer = UserProfileSerializer(user)
+#     return Response(serializer.data)
+
+
+# # 사용자가 좋아요/위시리스트/평점을 준 영화 목록 조회
+# @api_view(['GET'])
+# @authentication_classes([TokenAuthentication]) # 인증된 사용자만 권한 허용
+# def user_movie_list(request, user_pk):
+#     Users = get_object_or_404(User, pk=user_pk)
+#     serializer = UserMovieListSerializer(Users)
+#     user_list = {
+#         'id' : serializer.data.get('id'),
+#         'like_movies_count' : Users.like_movies.count(),
+#         'like_movies' : serializer.data.get('like_movies'),
+#     }
+#     return JsonResponse(user_list)
 
 # @api_view(['POST'])
 # def follow(request, username):
@@ -113,12 +115,12 @@ def user_movie_list(request, user_pk):
 #         you.followers.add(me)
 #         return Response("follow", status=status.HTTP_200_OK)
     
-@api_view(['POST'])
-def login(request):
-    serializer = UserLoginSerializer(data=request.data)
-    print(serializer)
+# @api_view(['POST'])
+# def login(request):
+#     serializer = UserLoginSerializer(data=request.data)
+#     print(serializer)
 
-    if serializer.is_valid():
-        return Response(serializer.data, status=status.HTTP_200_OK)
-    else:
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+#     if serializer.is_valid():
+#         return Response(serializer.data, status=status.HTTP_200_OK)
+#     else:
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

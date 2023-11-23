@@ -30,8 +30,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta: 
         model = User
-        fields = ('username', 'password', 'passwordConfirmation',)
-        read_only_fields = ('reviews', 'like_movies')
+        fields = ('id', 'username', 'password', 'passwordConfirmation',)
 
 class UserMovieListSerializer(serializers.ModelSerializer):
 
@@ -42,13 +41,10 @@ class UserMovieListSerializer(serializers.ModelSerializer):
             fields = ('id', 'title', 'poster_path',)
     
 
-    # 좋아요 한 영화 목록
-    like_movies = MovieSerializer(many=True)
 
     class Meta:
         model = User
-        # 사용자 id, 좋아요한 영화 목록, 
-        fields = ('id', 'like_movies',)
+        fields = ('id',)
 
 # 내 프로필 조회
 class ProfileSerializer(UserDetailsSerializer):
@@ -56,12 +52,11 @@ class ProfileSerializer(UserDetailsSerializer):
     class UserSerializer(serializers.ModelSerializer):
         class Meta:
             model = User
-            fields = ('id',)
+            fields = '__all__'
     
     class Meta:
         model = User
-        # 이 부분에 정의되는 부분만 수정 가능('followings : 팔로워')
-        fields = ('id' , 'followers', 'username', 'profile',)
+        fields = ('id' 'username',)
 
 # 상대방 프로필 조회 
 class UserProfileSerializer(UserDetailsSerializer):

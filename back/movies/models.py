@@ -1,6 +1,5 @@
 from django.db import models
 from django.conf import settings
-from django.core.validators import MinValueValidator, MaxValueValidator
 
 
 class Movie(models.Model):
@@ -17,7 +16,6 @@ class Movie(models.Model):
     video = models.CharField(max_length=200)
     vote_average = models.FloatField(null=True)
     vote_count = models.IntegerField(null=True)
-    like_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='like_movies')
 
 
 class Genre(models.Model):
@@ -25,12 +23,6 @@ class Genre(models.Model):
     genre_id = models.CharField(max_length=15)
     name = models.CharField(max_length=100)
 
-
-# class Comment(models.Model):
-#     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True, related_name='comments')
-#     movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
-#     content = models.TextField()
-    # like_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='like_comments')
 
 class Comment(models.Model):
     content = models.TextField()
