@@ -33,7 +33,7 @@ def movie_detail(request, movie_pk):
 class RandomMoviesView(APIView):
     def get(self, request, format=None):
         count = Movie.objects.aggregate(count=Count('id'))['count']
-        random_indices = random.sample(range(1, count+1), 25)
+        random_indices = random.sample(range(1, count+1), 28)
         random_movies = Movie.objects.filter(id__in=random_indices)
         serializer = MovieRandomSerializer(random_movies, many=True)
         return Response(serializer.data)
@@ -122,27 +122,26 @@ def comment_create_with_movie(request, movie_pk):
 #     return Response([user_like_serialize.data])
 
 
-# 영화 좋아요 등록 & 해제
-@permission_classes([IsAuthenticated])
-@api_view(['POST'])
-def movie_like(request, movie_pk):
-    movie = get_object_or_404(Movie, pk=movie_pk)
-    user = request.user
+# @permission_classes([IsAuthenticated])
+# @api_view(['POST'])
+# def movie_like(request, movie_pk):
+#     movie = get_object_or_404(Movie, pk=movie_pk)
+#     user = request.user
 
-    # 해제
-    if movie.like_movie_users.filter(pk=user.pk).exists():
-        movie.like_movie_users.remove(user)
-    # 등록
-    else:
-        movie.like_movie_users.add(user)
+#     # 해제
+#     if movie.like_movie_users.filter(pk=user.pk).exists():
+#         movie.like_movie_users.remove(user)
+#     # 등록
+#     else:
+#         movie.like_movie_users.add(user)
   
-    serializer = MovieLikeSerialzer(movie)
+#     serializer = MovieLikeSerialzer(movie)
     
-    like_movie_register = {
-        'id' : serializer.data.get('id'),
-        'like_movie_users' : serializer.data.get('like_movie_users'),
-    }
-    return JsonResponse(like_movie_register)
+#     like_movie_register = {
+#         'id' : serializer.data.get('id'),
+#         'like_movie_users' : serializer.data.get('like_movie_users'),
+#     }
+#     return JsonResponse(like_movie_register)
 
 # @api_view(['POST'])
 # def like_movie_users(request, my_pk):

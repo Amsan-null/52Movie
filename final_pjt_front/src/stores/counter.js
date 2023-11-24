@@ -28,7 +28,6 @@ export const useCounterStore = defineStore('counter', () => {
       }
     })
     .then((res) => {
-
       router.push({ name: 'movie_detail' })
     })
     .catch(err => console.log(err))

@@ -6,7 +6,7 @@
         <label for="content" class="form-label all_text">내용:</label>
         <textarea v-model.trim="content" class="form-control" id="content"></textarea>
       </div>
-      <button type="submit" class="mt-1 btn btn-secondary float-end all_text">Submit</button>
+      <button type="submit" class="mt-1 btn btn-secondary float-end all_text">등록</button>
     </form>
   </div>
   
@@ -44,6 +44,7 @@ const props = defineProps({
 const createComment = async function () {
   await store.commentCreate(props.movie.id, content.value);
   emits('commentCreated', content.value);
+  content.value = ''
 };
 </script>
 

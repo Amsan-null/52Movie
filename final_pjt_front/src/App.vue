@@ -7,9 +7,9 @@
         
         <div v-if="store.isLogin" class="collapse navbar-collapse justify-content-end">
           <ul class="navbar-nav">
-            <router-link class="navbar-brand" :to="{ name: 'main' }">Home</router-link>
+            <a href='/' class="navbar-brand" :to="{ name: 'main' }" @click="goToMain">Home</a>
             <li class="nav-item">
-              <router-link class="nav-link" :to="{ name: 'recommend' }">Recommned</router-link>
+              <a href='/movies/recommend' class="nav-link" :to="{ name: 'recommend' }" @click="goToRecommend">Recommened</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="/" @click="store.logOut">Logout</a>
@@ -22,7 +22,7 @@
 
         <div v-else class="collapse navbar-collapse justify-content-end">
           <ul class="navbar-nav">
-            <router-link class="navbar-brand" :to="{ name: 'main' }">Home</router-link>
+            <a href='/' class="navbar-brand" :to="{ name: 'main' }" @click="goToMain">Home</a>
             <li class="nav-item">
               <router-link class="nav-link" :to="{ name: 'login' }">Login</router-link>
             </li>
@@ -43,14 +43,22 @@
 
 <script setup>
 import { useCounterStore } from '@/stores/counter'
+import { useRouter } from 'vue-router'
 const store = useCounterStore()
+const router = useRouter()
+
+const goToMain = () => {
+    router.push({ name: 'main' })
+}
+
+const goToRecommend = () => {
+    router.push({ name: 'recommend' })
+}
+
+
 </script>
 
 <style>
-/* body {
-  background-color: rgb(43, 43, 43);
-} */
-
 
 h1 {
   font-size: 2.5rem;
