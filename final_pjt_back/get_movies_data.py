@@ -3,14 +3,14 @@ import django
 from django.conf import settings
 
 # 프로젝트의 settings 모듈을 지정
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'final_pjt_back.settings')  # 'your_project_name'을 실제 프로젝트의 이름으로 바꿔주세요.
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'final_pjt_back.settings') 
 django.setup()
 
 import requests
-from movies.models import Movie, Genre  # 'yourapp'은 실제 Django 앱의 이름으로 바꿔야 합니다.
+from movies.models import Movie, Genre
 
 # API 키
-api_key = "d15d5967b6757f765d670d52691a3b4d"
+api_key = ""
 
 # API 엔드포인트
 base_url = "https://api.themoviedb.org/3/movie/popular?language=ko-KR&page="
@@ -47,11 +47,4 @@ try:
         print(f"페이지 {page}의 데이터를 성공적으로 Django DB에 저장했습니다.")
 
     print("데이터를 성공적으로 Django DB에 저장했습니다.")
-except requests.exceptions.HTTPError as errh:
-    print(f"HTTP 오류 발생: {errh}")
-except requests.exceptions.ConnectionError as errc:
-    print(f"연결 오류 발생: {errc}")
-except requests.exceptions.Timeout as errt:
-    print(f"시간 초과 오류 발생: {errt}")
-except requests.exceptions.RequestException as err:
-    print(f"오류 발생: {err}")
+
