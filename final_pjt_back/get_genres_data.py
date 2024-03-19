@@ -3,14 +3,14 @@ import django
 from django.conf import settings
 
 # 프로젝트의 settings 모듈을 지정
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'final_pjt_back.settings')  # 'your_project_name'을 실제 프로젝트의 이름으로 바꿔주세요.
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'final_pjt_back.settings') 
 django.setup()
 
 import requests
-from movies.models import Movie, Genre  # 'yourapp'은 실제 Django 앱의 이름으로 바꿔야 합니다.
+from movies.models import Movie, Genre 
 
 # API 키
-api_key = "d15d5967b6757f765d670d52691a3b4d"
+api_key = ""
 
 genres = [
     {
