@@ -1,2 +1,2 @@
-# movie_pjt
-관통PJT
+# 52movie
+장르별/랜덤 영화 추천 서비스
